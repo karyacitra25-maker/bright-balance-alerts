@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HargaRouteImport } from './routes/harga'
+import { Route as ReferralRouteImport } from './routes/referral'
 import { Route as StorRouteImport } from './routes/stor'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const HargaRoute = HargaRouteImport.update({
   path: '/harga',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReferralRoute = ReferralRouteImport.update({
+  id: '/referral',
+  path: '/referral',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StorRoute = StorRouteImport.update({
   id: '/stor',
   path: '/stor',
@@ -32,30 +38,34 @@ const StorRoute = StorRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/harga': typeof HargaRoute
+  '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/harga': typeof HargaRoute
+  '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/harga': typeof HargaRoute
+  '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/harga' | '/stor'
+  fullPaths: '/' | '/harga' | '/referral' | '/stor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/harga' | '/stor'
-  id: '__root__' | '/' | '/harga' | '/stor'
+  to: '/' | '/harga' | '/referral' | '/stor'
+  id: '__root__' | '/' | '/harga' | '/referral' | '/stor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HargaRoute: typeof HargaRoute
+  ReferralRoute: typeof ReferralRoute
   StorRoute: typeof StorRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HargaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/referral': {
+      id: '/referral'
+      path: '/referral'
+      fullPath: '/referral'
+      preLoaderRoute: typeof ReferralRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/stor': {
       id: '/stor'
       path: '/stor'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HargaRoute: HargaRoute,
+  ReferralRoute: ReferralRoute,
   StorRoute: StorRoute,
 }
 export const routeTree = rootRouteImport

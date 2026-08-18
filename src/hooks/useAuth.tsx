@@ -55,6 +55,8 @@ export interface UserDoc {
 export interface Submission {
   id: string;
   uid: string;
+  userName?: string;
+  userEmail?: string;
   count: number;
   totalRp?: number;
   creditedRp?: number;
@@ -66,12 +68,14 @@ export interface Submission {
 
 export interface Withdrawal {
   id: string;
+  uid: string;
   walletType?: string;
   walletNumber?: string;
   amount?: number;
   status?: string;
   createdAt?: number;
 }
+
 
 interface AuthContextValue {
   user: User | null;
