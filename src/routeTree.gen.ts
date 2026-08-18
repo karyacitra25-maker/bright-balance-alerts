@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as HargaRouteImport } from './routes/harga'
 import { Route as ReferralRouteImport } from './routes/referral'
 import { Route as StorRouteImport } from './routes/stor'
@@ -17,6 +18,11 @@ import { Route as StorRouteImport } from './routes/stor'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HargaRoute = HargaRouteImport.update({
@@ -37,12 +43,14 @@ const StorRoute = StorRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/harga': typeof HargaRoute
   '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/harga': typeof HargaRoute
   '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/harga': typeof HargaRoute
   '/referral': typeof ReferralRoute
   '/stor': typeof StorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/harga' | '/referral' | '/stor'
+  fullPaths: '/' | '/admin' | '/harga' | '/referral' | '/stor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/harga' | '/referral' | '/stor'
-  id: '__root__' | '/' | '/harga' | '/referral' | '/stor'
+  to: '/' | '/admin' | '/harga' | '/referral' | '/stor'
+  id: '__root__' | '/' | '/admin' | '/harga' | '/referral' | '/stor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   HargaRoute: typeof HargaRoute
   ReferralRoute: typeof ReferralRoute
   StorRoute: typeof StorRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/harga': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   HargaRoute: HargaRoute,
   ReferralRoute: ReferralRoute,
   StorRoute: StorRoute,
