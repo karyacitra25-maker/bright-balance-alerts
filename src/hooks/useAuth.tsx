@@ -35,7 +35,6 @@ import { rupiah } from "@/lib/format";
 export interface ReferralEntry {
   uid: string;
   name?: string;
-  email?: string;
   joinedAt?: number;
   bonusGiven?: boolean;
   bonusEarned?: number;
