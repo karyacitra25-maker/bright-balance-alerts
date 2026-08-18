@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import StorPage from "@/routes/stor";
+import { StorPage } from "@/components/pages/StorPage";
 
 export const Route = createFileRoute("/stor")({
   component: StorPage,
