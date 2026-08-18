@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import {
   collection,
   doc,
-  getDocs,
+  getDoc,
   onSnapshot,
   query,
   updateDoc,
-  where,
+  increment as fsIncrement,
 } from "firebase/firestore";
 import { toast } from "sonner";
-import { Shield, AlertTriangle, CheckCircle, XCircle, DollarSign } from "lucide-react";
+import { Shield, CheckCircle, XCircle, DollarSign } from "lucide-react";
 import { getDb } from "@/lib/firebase";
 import { useAuth } from "@/hooks/useAuth";
 import { rupiah, formatDate } from "@/lib/format";
@@ -20,7 +20,6 @@ export function AdminPage() {
   const { user, isAdmin } = useAuth();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user || !isAdmin) return;
@@ -43,7 +42,6 @@ export function AdminPage() {
       },
       (err) => console.warn("Admin wd:", err),
     );
-    setLoading(false);
     return () => {
       unsubSubs();
       unsubWd();
@@ -64,9 +62,8 @@ export function AdminPage() {
     try {
       const db = getDb();
       const userRef = doc(db, "users", uid);
-      const userSnap = await doc.get ? doc.get : null;
+      await updateDoc(userRef, { balance: fsIncrement(amount) });
       await updateDoc(doc(db, "submissions", id), { status: "Berhasil", creditedRp: amount });
-      await updateDoc(userRef, { balance: increment(getDocs, userRef, amount) });
       await pushNotification(uid, {
         type: "balance",
         title: "Saldo masuk",
@@ -116,12 +113,10 @@ export function AdminPage() {
       </div>
 
       <section className="panel-card rounded-3xl p-6">
-        <h2 classSet="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
           Setoran Gmail ({submissions.length})
         </h2>
-        {loading && submissions.length === 0 ? (
-          <p className="text-xs text-muted-foreground">Memuat...</p>
-        ) : submissions.length === 0 ? (
+        {submissions.length === 0 ? (
           <p className="text-xs text-muted-foreground">Belum ada setoran.</p>
         ) : (
           <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar pr-1">
@@ -182,7 +177,7 @@ export function AdminPage() {
                   </span>
                   {w.status !== "Berhasil" && (
                     <button
-                      onClick={() => processWithdrawal(w.id, w.uid || "", w.amount || 0, "Berhasil")}
+                      onClick={() => processWithdrawal(w.id, w.uid, w.amount || 0, "Berhasil")}
                       className="p-2 rounded-lg bg-success/20 text-success hover:bg-success/30"
                       title="Setujui"
                     >
@@ -191,7 +186,7 @@ export function AdminPage() {
                   )}
                   {w.status !== "Ditolak" && (
                     <button
-                      onClick={() => processWithdrawal(w.id, w.uid || "", w.amount || 0, "Ditolak")}
+                      onClick={() => processWithdrawal(w.id, w.uid, w.amount || 0, "Ditolak")}
                       className="p-2 rounded-lg bg-destructive/20 text-destructive hover:bg-destructive/30"
                       title="Tolak"
                     >
@@ -214,11 +209,4 @@ function statusBadge(status?: string) {
     case "Ditolak": return "bg-destructive/20 text-destructive border border-destructive/30";
     default: return "bg-warning/20 text-warning border border-warning/30";
   }
-}
-
-// Helper to increment Firestore balance safely (read + write)
-async function increment(getDocs: typeof import("firebase/firestore").getDocs, userRef: ReturnType<ReturnType<typeof import("firebase/firestore").getDb>["doc"]>, amount: number) {
-  const snap = await getDocs;
-  // This is a placeholder; real implementation would use FieldValue.increment
-  return 0;
 }
