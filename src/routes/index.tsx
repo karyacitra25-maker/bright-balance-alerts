@@ -243,7 +243,7 @@ function DashboardPage() {
   );
 }
 
-function StatusBadge({ status }: { status?: string }) {
+function StatusBadge({ status }: { status?: string | undefined }) {
   const tone =
     status === "Sukses"
       ? "text-success bg-success-soft border-success/30"
