@@ -35,7 +35,9 @@ export function StorPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) return;
     setError(null);
+
     const now = new Date();
     const hour = parseInt(
       now.toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour12: false, hour: "2-digit" }),
